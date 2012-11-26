@@ -67,7 +67,7 @@ public class Display extends GLSurfaceView {
 		}
 
 		public void onSurfaceCreated(GL10 unused, EGLConfig config) {
-	        Log.i("Mope", "Renderer.onSurfaceCreated");
+	        Log.i("Soar", "Renderer.onSurfaceCreated");
 
 			for (GLObject o : globjects)
 				o.onInit();
@@ -104,7 +104,7 @@ public class Display extends GLSurfaceView {
 	    }
 
 	    public void onSurfaceChanged(GL10 unused, int width, int height) {
-	        Log.i("Mope", "Renderer.onSurfaceChanged");
+	        Log.i("Soar", "Renderer.onSurfaceChanged");
 
 	    	display.width = width;
 	    	display.height = height;
