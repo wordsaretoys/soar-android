@@ -11,8 +11,12 @@ public class Random extends java.util.Random {
 
 	private static final long serialVersionUID = -7936338198349338087L;
 
+	public Random(long seed) {
+		super(seed != 0 ? seed : System.currentTimeMillis());
+	}
+	
 	public void reseed(long seed) {
-		setSeed(seed);
+		setSeed(seed != 0 ? seed : System.currentTimeMillis());
 	}
 	
 	public double get() {
