@@ -234,49 +234,85 @@ public class Mesh {
 	}
 	
 	/**
-	 * method for iterating over a 2D mesh
-	 * useful for building heightmaps
-	 * 
-	 * create an anonymous instance of the class
-	 * and override the vertex method with code
-	 * to set each vertex.
+	 * class for iterating over a 2D surface
+	 * useful for building heightmaps/shapes
 	 * 
 	 * @author chris
 	 *
 	 */
-    static public class iterator2D {
+    static public class Iterator2D {
+    	
+    	public double ir;
+    	public double jr;
+    	
+    	private Mesh mesh;
+    	private boolean winding;
+    	
+    	private int il;
+    	private int jl;
+    	private int im;
+    	private int jm;
+    	
+    	private int i, j, k;
     	
     	/**
-    	 * iterates over a 2D mesh, generating indexes
-    	 * 
+    	 * constructor
     	 * @param mesh
-    	 * @param il, jl number of steps
-    	 * @param wind winding order
+    	 * @param il count of steps in 1st dimension
+    	 * @param jl count of steps in 2nd dimension
+    	 * @param winding triangle winding order
     	 */
-    	public iterator2D(Mesh mesh, int il, int jl, boolean wind) {
-    		int im = il - 1;
-    		int jm = jl - 1;
-    		int k = mesh.length / mesh.stride;
-    		int i, j;
-
-    		for (i = 0; i < il; i++) {
-    			for (j = 0; j < jl; j++, k++) {
-    				vertex((double)i / (double) im, (double) j / (double) jm);
-    				if (i < im && j < jm) {
-    					if (wind) {
-    						mesh.index(k, k + jl, k + 1, k + jl, k + jl + 1, k + 1);
-    					} else {
-    						mesh.index(k, k + 1, k + jl, k + jl, k + 1, k + jl + 1);
-    					}
-    				}
-    			}
-    		}
+    	public Iterator2D(Mesh mesh, int il, int jl, boolean winding) {
+    		this.mesh = mesh;
+    		this.winding = winding;
+    		this.il = il;
+    		this.jl = jl;
+    		im = il - 1;
+    		jm = jl - 1;
+    		reset();
     	}
-
+    	
     	/**
-    	 * override in local class to set vertexes
-    	 * @param ir, jr ratio of current step to total steps (0..1) 
+    	 * call this before (re)building mesh
     	 */
-    	public void vertex(double ir, double jr) {}
+    	public void reset() {
+    		i = 0;
+    		j = 0;
+    		k = mesh.length / mesh.stride;
+    		ir = 0;
+    		jr = 0;
+    	}
+    	
+    	/**
+    	 * end of iteration test
+    	 * @return true if iteration complete
+    	 */
+    	public boolean done() {
+    		return i == il;
+    	}
+    	
+    	/**
+    	 * iterates to next step in surface
+    	 * call after setting each mesh vertex
+    	 */
+    	public void next() {
+			if (i < im && j < jm) {
+				if (winding) {
+					mesh.index(k, k + jl, k + 1, k + jl, k + jl + 1, k + 1);
+				} else {
+					mesh.index(k, k + 1, k + jl, k + jl, k + 1, k + jl + 1);
+				}
+			}
+    		
+    		j++;
+    		if (j == jl) {
+    			i++;
+    			j = 0;
+    		}
+    		k++;
+    		
+    		ir = (double) i / (double) im;
+    		jr = (double) j / (double) jm;
+    	}
     }
 }
