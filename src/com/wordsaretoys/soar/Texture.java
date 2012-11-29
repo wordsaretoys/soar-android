@@ -17,6 +17,7 @@ public class Texture {
 	private int[] id = new int[1];
 
 	public Texture() {
+		id[0] = -1;
 	}
 
 	/**
@@ -49,7 +50,9 @@ public class Texture {
 	 * @return true if build succeeded
 	 */
 	public boolean build(int format, ByteBuffer bb, int width, int height) {
-	
+		// release any existing resources
+		release();
+		
 		// allocate a GL texture
 		GLES20.glGenTextures(1, id, 0);
 
